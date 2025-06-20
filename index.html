@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rama SDA Junior School - Exam Management System</title>
+    <title>Rama SDA Primary School - Exam Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -165,17 +165,23 @@
                     { name: 'Term 3', midterm: 'Term 3 Midterm', endterm: 'Term 3 Endterm' }
                 ],
                 examTypes: ['Midterm', 'Endterm'],
-                grades: ['7', '8', '9'],
+                grades: ['PP1', 'PP2', '1', '2', '3', '4', '5', '6'],
                 subjects: [
                     { name: 'ENGLISH', code: 'ENG' },
+                    { name: 'RELIGIIOUS ACTIVITIES', code: 'REL ACTV' },
+                    { name: 'ENVIRONMENTAL ACTIVITIES', code: 'ENV ACTV' },
+                    { name: 'CREATIVE ACTIVITIES', code: 'CA ACTV' },
+                    { name: 'LANGUAGE ACTIVITIES', code: 'LANG ACTV' },
+                    { name: 'MATHEMATICAL ACTIVITIES', code: 'MATH ACTV' },
+                    { name: 'ENVIRONMENTAL EDUCATION', code: 'ENV EDU' },
                     { name: 'KISWAHILI', code: 'KIS' },
-                    { name: 'MATHEMATICS', code: 'MAT' },
-                    { name: 'INTEGRATED SCIENCE', code: 'ISC' },
+                    { name: 'MATHEMATICS', code: 'MATH' },
+                    { name: 'SCIENCE and Technology', code: 'SCI TECH' },
                     { name: 'AGRICULTURE AND NUTRITION', code: 'AGR' },
-                    { name: 'SOCIAL STUDIES', code: 'SOC' },
-                    { name: 'PRE-TECHNICAL STUDIES', code: 'PTS' },
-                    { name: 'CHRISTIAN RELIGIOUS EDUCATION', code: 'CRE' },
-                    { name: 'CREATIVE ARTS AND SPORTS', code: 'CAS' }
+                    { name: 'SOCIAL STUDIES', code: 'SST' },
+                    { name: 'Psychomotor and Creative Activities', code: 'PSY/CACTV' },
+                    { name: 'RELIGIOUS EDUCATION', code: 'CRE' },
+                    { name: 'CREATIVE ARTS', code: 'CAS' }
                 ],
                 termDates: {
                     term1: { opening: '', closing: '' },
@@ -188,14 +194,14 @@
         let currentUser = null;
 
         // Enhanced Utility Functions
-        function generateAssessmentNumber() {
+        function enterAssessmentNumber() {
             const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             const letter = letters[Math.floor(Math.random() * letters.length)];
             const numbers = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
             return letter + numbers;
         }
 
-        function generateAdmissionNumber() {
+        function enterAdmissionNumber() {
             const existing = appData.students.map(s => parseInt(s.admissionNumber));
             const max = existing.length > 0 ? Math.max(...existing) : 0;
             return (max + 1).toString().padStart(4, '0');
@@ -722,9 +728,9 @@
                 return;
             }
 
-            const newGrade = prompt('Enter new grade (7/8/9):', student.grade);
+            const newGrade = prompt('Enter new grade (PP1/PP2/1/2/3/4/5/6):', student.grade);
             if (!newGrade || !appData.settings.grades.includes(newGrade)) {
-                alert('Please enter a valid grade (7, 8, or 9)');
+                alert('Please enter a valid grade (PP1,PP2,1,2,3,4, 5, or 6)');
                 return;
             }
 
@@ -1593,7 +1599,7 @@
                         <div class="flex justify-center items-center mb-4">
                             <div class="logo-container mr-4"></div>
                             <div>
-                                <h1 class="text-2xl font-bold text-secondary">RAMA SDA JUNIOR SCHOOL</h1>
+                                <h1 class="text-2xl font-bold text-secondary">RAMA SDA PRIMARY SCHOOL</h1>
                                 <p class="text-sm">P.O. BOX 45-50201, CHEPTAIS</p>
                                 <p class="text-xs italic font-semibold text-primary">"IN GOD WE CAN"</p>
                             </div>
