@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAMA SDA School Exam Analytics System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#1e40af',
+                        accent: '#fbbf24'
+                    }
+                }
+            },
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { font-size: 12px; }
+            .page-break { page-break-before: always; }
+        }
+        .print-only { display: none; }
+        
+        .dark {
+            --tw-bg-opacity: 1;
+            background-color: rgb(24 24 24 / var(--tw-bg-opacity));
+        }
+
+        .school-logo {
+            width: 80px;
+            height: 80px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .primary-logo {
+            background-image: url('https://pfst.cf2.poecdn.net/base/image/571b55aecccbb93c12dd4d5ab69221c08621f4164fd27ef709929fa75b5e30cf?w=1024&h=1536');
+        }
+
+        .junior-logo {
+            background-image: url('https://pfst.cf2.poecdn.net/base/image/9a8fd71dbc71963ef1fbe99d7e8a89a413f1c9bda60d46cd35773a3c85b38c7a?w=1024&h=1536');
+        }
+
+        .btn-active {
+            background-color: #5D5CDE !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md">
+                <div class="text-center mb-8">
+                    <div class="w-24 h-24 mx-auto mb-4 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-3xl text-blue-600 dark:text-blue-400"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">RAMA SDA SCHOOL</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Exam Analytics System</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">IN GOD WE CAN</p>
+                </div>
+                
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">User Role</label>
+                        <select id="userRole" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-base">
+                            <option value="admin">Admin</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="student">Student</option>
+                            <option value="parent">Parent</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Username/ID</label>
+                        <input type="text" id="username" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-base" value="admin" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                        <input type="password" id="password" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-base" value="admin123" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-primary hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                        Login
+                    </button>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <p class="text-xs text-gray-600 dark:text-gray-400">
+                        Default: admin/admin123 | teacher/teacher123 | student/student123
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="mainDashboard" class="hidden">
+            <!-- Navigation Header -->
+            <nav class="bg-white dark:bg-gray-800 shadow-lg border-b dark:border-gray-700 no-print">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between h-16">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-graduation-cap text-2xl text-primary"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h1 class="text-xl font-semibold">RAMA SDA SCHOOL</h1>
+                                <p class="text-xs text-gray-500">Exam Analytics System</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="section-selector">
+                                <label class="text-sm font-medium mr-2">Section:</label>
+                                <select id="sectionSelector" class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-sm">
+                                    <option value="PRE-PRIMARY">Pre-Primary</option>
+                                    <option value="LOWER PRIMARY">Lower Primary</option>
+                                    <option value="UPPER PRIMARY">Upper Primary</option>
+                                    <option value="JUNIOR">Junior Secondary</option>
+                                </select>
+                            </div>
+                            <span id="currentUser" class="text-sm font-medium"></span>
+                            <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Sidebar and Content -->
+            <div class="flex">
+                <!-- Sidebar -->
+                <div id="sidebar" class="w-64 bg-gray-50 dark:bg-gray-800 min-h-screen shadow-lg no-print">
+                    <div class="p-4">
+                        <div id="adminMenu" class="space-y-2">
+                            <button class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-view="dashboard">
+                                <i class="fas fa-dashboard mr-3"></i>Dashboard
+                            </button>
+                            <button class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-view="students">
+                                <i class="fas fa-users mr-3"></i>Students
+                            </button>
+                            <button class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-view="marks">
+                                <i class="fas fa-clipboard-list mr-3"></i>Marks Entry
+                            </button>
+                            <button class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-view="reports">
+                                <i class="fas fa-file-alt mr-3"></i>Report Cards
+                            </button>
+                            <button class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-view="analytics">
+                                <i class="fas fa-chart-bar mr-3"></i>Analytics
+                            </button>
+                            <button class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-view="promotion">
+                                <i class="fas fa-arrow-up mr-3"></i>Student Promotion
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="flex-1 p-6">
+                    <!-- Dashboard View -->
+                    <div id="dashboardView" class="view-content">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-3xl font-bold">Dashboard - <span id="currentSection">Pre-Primary</span></h2>
+                            <div class="text-right">
+                                <p class="text-lg font-semibold" id="sectionInfo">Pre-Primary Section (PP1 - PP2)</p>
+                                <p class="text-sm text-gray-500">Academic Year 2024</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-blue-500 text-white">
+                                        <i class="fas fa-users text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h3 class="text-lg font-semibold">Total Students</h3>
+                                        <p id="totalStudents" class="text-2xl font-bold text-blue-500">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-green-500 text-white">
+                                        <i class="fas fa-graduation-cap text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h3 class="text-lg font-semibold">Classes</h3>
+                                        <p id="totalClasses" class="text-2xl font-bold text-green-500">2</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-yellow-500 text-white">
+                                        <i class="fas fa-chart-line text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h3 class="text-lg font-semibold">Performance</h3>
+                                        <p id="avgPerformance" class="text-2xl font-bold text-yellow-500">85%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-purple-500 text-white">
+                                        <i class="fas fa-calendar text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h3 class="text-lg font-semibold">Current Term</h3>
+                                        <p class="text-2xl font-bold text-purple-500">Term 1</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Students Management View -->
+                    <div id="studentsView" class="view-content hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-3xl font-bold">Students Management</h2>
+                            <div class="flex gap-3">
+                                <button id="addStudentBtn" class="bg-primary hover:bg-purple-700 text-white px-6 py-3 rounded-lg">
+                                    <i class="fas fa-plus mr-2"></i>Add Student
+                                </button>
+                                <button id="exportStudentsBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg">
+                                    <i class="fas fa-download mr-2"></i>Export CSV
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold">Filter Students</h3>
+                                <div class="flex gap-3">
+                                    <input type="text" id="studentSearch" placeholder="Search students..." class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                    <select id="gradeFilter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                        <option value="">All Grades</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                            <div class="overflow-x-auto">
+                                <table class="w-full table-auto">
+                                    <thead>
+                                        <tr class="border-b dark:border-gray-700">
+                                            <th class="text-left py-3 px-4">Admission No.</th>
+                                            <th class="text-left py-3 px-4">Name</th>
+                                            <th class="text-left py-3 px-4">Gender</th>
+                                            <th class="text-left py-3 px-4">Grade</th>
+                                            <th class="text-left py-3 px-4">Year</th>
+                                            <th class="text-left py-3 px-4">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsTable">
+                                        <!-- Students will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Marks Entry View -->
+                    <div id="marksView" class="view-content hidden">
+                        <h2 class="text-3xl font-bold mb-6">Marks Entry</h2>
+                        
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Select Exam Parameters</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Year</label>
+                                    <select id="marksYear" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Grade</label>
+                                    <select id="marksGrade" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                        <option value="">Select Grade</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Term</label>
+                                    <select id="marksTerm" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                        <option value="">Select Term</option>
+                                        <option value="Term 1">Term 1</option>
+                                        <option value="Term 2">Term 2</option>
+                                        <option value="Term 3">Term 3</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Exam Type</label>
+                                    <select id="marksExamType" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                        <option value="">Select Exam</option>
+                                        <option value="Midterm">Midterm</option>
+                                        <option value="Endterm">Endterm</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Learning Area</label>
+                                    <select id="marksSubject" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                        <option value="">Select Subject</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button id="loadStudentsBtn" class="mt-4 bg-primary hover:bg-purple-700 text-white px-6 py-3 rounded-lg">
+                                Load Students
+                            </button>
+                        </div>
+
+                        <div id="marksEntrySection" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hidden">
+                            <h3 class="text-xl font-semibold mb-4">Enter Marks</h3>
+                            <div id="marksEntryTable">
+                                <!-- Marks entry table will be populated here -->
+                            </div>
+                            <div class="flex gap-4 mt-4">
+                                <button id="submitMarksBtn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg">
+                                    Submit Marks
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reports View -->
+                    <div id="reportsView" class="view-content hidden">
+                        <h2 class="text-3xl font-bold mb-6">Report Cards</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                            <!-- Individual Report Card -->
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Individual Report Card</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Student</label>
+                                        <select id="reportStudent" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                            <option value="">Select Student</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Term</label>
+                                        <select id="reportTerm" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                            <option value="">Select Term</option>
+                                            <option value="Term 1">Term 1</option>
+                                            <option value="Term 2">Term 2</option>
+                                            <option value="Term 3">Term 3</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Year</label>
+                                        <select id="reportYear" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                            <option value="2024">2024</option>
+                                            <option value="2025">2025</option>
+                                        </select>
+                                    </div>
+                                    <button id="generateReportBtn" class="w-full bg-primary hover:bg-purple-700 text-white px-6 py-3 rounded-lg">
+                                        Generate Report
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Bulk Report Cards -->
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Bulk Report Cards</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Grade</label>
+                                        <select id="bulkReportGrade" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                            <option value="">Select Grade</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Term</label>
+                                        <select id="bulkReportTerm" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                            <option value="">Select Term</option>
+                                            <option value="Term 1">Term 1</option>
+                                            <option value="Term 2">Term 2</option>
+                                            <option value="Term 3">Term 3</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Year</label>
+                                        <select id="bulkReportYear" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                            <option value="2024">2024</option>
+                                            <option value="2025">2025</option>
+                                        </select>
+                                    </div>
+                                    <button id="generateBulkReportsBtn" class="w-full bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg">
+                                        Generate Bulk Reports
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="reportContent" class="hidden">
+                            <!-- Report card content will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Analytics View -->
+                    <div id="analyticsView" class="view-content hidden">
+                        <h2 class="text-3xl font-bold mb-6">Exam Analytics</h2>
+                        
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Select Parameters</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Year</label>
+                                    <select id="analyticsYear" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Grade</label>
+                                    <select id="analyticsGrade" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                        <option value="">Select Grade</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Term</label>
+                                    <select id="analyticsTerm" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                        <option value="">Select Term</option>
+                                        <option value="Term 1">Term 1</option>
+                                        <option value="Term 2">Term 2</option>
+                                        <option value="Term 3">Term 3</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Exam Type</label>
+                                    <select id="analyticsExamType" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                        <option value="">Select Exam</option>
+                                        <option value="Midterm">Midterm</option>
+                                        <option value="Endterm">Endterm</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button id="generateAnalyticsBtn" class="mt-4 bg-primary hover:bg-purple-700 text-white px-6 py-3 rounded-lg">
+                                Generate Analytics
+                            </button>
+                        </div>
+
+                        <div id="analyticsResults" class="hidden">
+                            <!-- Analytics results will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Student Promotion View -->
+                    <div id="promotionView" class="view-content hidden">
+                        <h2 class="text-3xl font-bold mb-6">Student Promotion</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                            <!-- Individual Promotion -->
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Promote Individual Student</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Select Student</label>
+                                        <select id="promoteStudent" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                            <option value="">Select Student</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Current Grade</label>
+                                        <input type="text" id="currentGrade" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-600 text-base" readonly>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Promote To</label>
+                                        <select id="promoteToGrade" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                            <option value="">Select New Grade</option>
+                                        </select>
+                                    </div>
+                                    <button id="promoteIndividualBtn" class="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg">
+                                        <i class="fas fa-arrow-up mr-2"></i>Promote Student
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Bulk Promotion -->
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Bulk Class Promotion</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Select Grade to Promote</label>
+                                        <select id="bulkPromoteGrade" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                            <option value="">Select Grade</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Academic Year</label>
+                                        <select id="promoteYear" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base">
+                                            <option value="2024">2024</option>
+                                            <option value="2025">2025</option>
+                                        </select>
+                                    </div>
+                                    <div id="promotionPreview" class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg hidden">
+                                        <p class="text-sm text-blue-700 dark:text-blue-300">
+                                            <strong>Preview:</strong> <span id="previewText"></span>
+                                        </p>
+                                    </div>
+                                    <button id="previewPromotionBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg mb-2">
+                                        <i class="fas fa-eye mr-2"></i>Preview Promotion
+                                    </button>
+                                    <button id="promoteBulkBtn" class="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg">
+                                        <i class="fas fa-users mr-2"></i>Promote All Students
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Promotion History -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4">Recent Promotions</h3>
+                            <div id="promotionHistory">
+                                <p class="text-gray-500">No recent promotions found.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Modal -->
+        <div id="studentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md">
+                <h3 class="text-xl font-bold mb-4">Add Student</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Admission Number</label>
+                        <input type="text" id="studentAdmissionNo" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Full Name</label>
+                        <input type="text" id="studentName" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Gender</label>
+                        <select id="studentGender" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Grade</label>
+                        <select id="studentGrade" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base" required>
+                            <option value="">Select Grade</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Year</label>
+                        <input type="number" id="studentYear" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base" value="2024" required>
+                    </div>
+                    <div class="flex gap-4 mt-6">
+                        <button id="saveStudentBtn" class="flex-1 bg-primary hover:bg-purple-700 text-white py-2 px-4 rounded-lg">
+                            Save Student
+                        </button>
+                        <button id="cancelStudentBtn" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let currentRole = null;
+        let currentSection = 'PRE-PRIMARY';
+        let students = [];
+        let marks = [];
+        let promotionHistory = [];
+
+        // Section definitions
+        const sections = {
+            'PRE-PRIMARY': {
+                name: 'Pre-Primary',
+                grades: ['PP1', 'PP2'],
+                info: 'Pre-Primary Section (PP1 - PP2)'
+            },
+            'LOWER PRIMARY': {
+                name: 'Lower Primary',
+                grades: ['Grade 1', 'Grade 2', 'Grade 3'],
+                info: 'Lower Primary Section (Grade 1 - 3)'
+            },
+            'UPPER PRIMARY': {
+                name: 'Upper Primary',
+                grades: ['Grade 4', 'Grade 5', 'Grade 6'],
+                info: 'Upper Primary Section (Grade 4 - 6)'
+            },
+            'JUNIOR': {
+                name: 'Junior Secondary',
+                grades: ['Grade 7', 'Grade 8', 'Grade 9'],
+                info: 'Junior Secondary Section (Grade 7 - 9)'
+            }
+        };
+
+        // Learning areas by grade level
+        const learningAreas = {
+            'PP1': ['Language Activities', 'Mathematical Activities', 'Environmental Activities', 'Creative Activities', 'Religious Activities'],
+            'PP2': ['Language Activities', 'Mathematical Activities', 'Environmental Activities', 'Creative Activities', 'Religious Activities'],
+            'Grade 1': ['English Language Activities', 'Kiswahili Language Activities', 'Mathematical Activities', 'Environmental Activities', 'Creative Activities', 'Religious Education Activities'],
+            'Grade 2': ['English Language Activities', 'Kiswahili Language Activities', 'Mathematical Activities', 'Environmental Activities', 'Creative Activities', 'Religious Education Activities'],
+            'Grade 3': ['English Language Activities', 'Kiswahili Language Activities', 'Mathematical Activities', 'Environmental Activities', 'Creative Activities', 'Religious Education Activities'],
+            'Grade 4': ['English', 'Kiswahili', 'Mathematics', 'Religious Education', 'Science and Technology', 'Agriculture and Nutrition', 'Social Studies', 'Creative Arts'],
+            'Grade 5': ['English', 'Kiswahili', 'Mathematics', 'Religious Education', 'Science and Technology', 'Agriculture and Nutrition', 'Social Studies', 'Creative Arts'],
+            'Grade 6': ['English', 'Kiswahili', 'Mathematics', 'Religious Education', 'Science and Technology', 'Agriculture and Nutrition', 'Social Studies', 'Creative Arts'],
+            'Grade 7': ['English (ENG 901)', 'Kiswahili (KIS 902)', 'Mathematics (MATH 903)', 'Integrated Science (INT-SCIE 905)', 'Agriculture and Nutrition (AGR 906)', 'Social Studies (SST 907)', 'Christian Religious Education (CRE 908)', 'Creative Arts and Sports (CAS 911)', 'Pre-technical Studies (PRE-TECH 912)'],
+            'Grade 8': ['English (ENG 901)', 'Kiswahili (KIS 902)', 'Mathematics (MATH 903)', 'Integrated Science (INT-SCIE 905)', 'Agriculture and Nutrition (AGR 906)', 'Social Studies (SST 907)', 'Christian Religious Education (CRE 908)', 'Creative Arts and Sports (CAS 911)', 'Pre-technical Studies (PRE-TECH 912)'],
+            'Grade 9': ['English (ENG 901)', 'Kiswahili (KIS 902)', 'Mathematics (MATH 903)', 'Integrated Science (INT-SCIE 905)', 'Agriculture and Nutrition (AGR 906)', 'Social Studies (SST 907)', 'Christian Religious Education (CRE 908)', 'Creative Arts and Sports (CAS 911)', 'Pre-technical Studies (PRE-TECH 912)']
+        };
+
+        // Grade progression mapping
+        const gradeProgression = {
+            'PP1': 'PP2',
+            'PP2': 'Grade 1',
+            'Grade 1': 'Grade 2',
+            'Grade 2': 'Grade 3',
+            'Grade 3': 'Grade 4',
+            'Grade 4': 'Grade 5',
+            'Grade 5': 'Grade 6',
+            'Grade 6': 'Grade 7',
+            'Grade 7': 'Grade 8',
+            'Grade 8': 'Grade 9',
+            'Grade 9': 'Graduate'
+        };
+
+        // All possible grades in order
+        const allGrades = ['PP1', 'PP2', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9'];
+
+        // Grading functions
+        function getPerformanceLevel(mark) {
+            if (mark >= 75) return 'EE';
+            if (mark >= 50) return 'ME';
+            if (mark >= 25) return 'AE';
+            return 'BE';
+        }
+
+        function getAchievementLevel(mark) {
+            if (mark >= 88) return 'AL8';
+            if (mark >= 75) return 'AL7';
+            if (mark >= 62) return 'AL6';
+            if (mark >= 50) return 'AL5';
+            if (mark >= 37) return 'AL4';
+            if (mark >= 25) return 'AL3';
+            if (mark >= 12) return 'AL2';
+            return 'AL1';
+        }
+
+        function getPoints(achievementLevel) {
+            const pointsMap = {
+                'AL8': 8, 'AL7': 7, 'AL6': 6, 'AL5': 5,
+                'AL4': 4, 'AL3': 3, 'AL2': 2, 'AL1': 1
+            };
+            return pointsMap[achievementLevel] || 0;
+        }
+
+        // Auto-save functionality
+        function saveData() {
+            try {
+                localStorage.setItem('students', JSON.stringify(students));
+                localStorage.setItem('marks', JSON.stringify(marks));
+                localStorage.setItem('promotionHistory', JSON.stringify(promotionHistory));
+                console.log('Data saved successfully');
+            } catch (error) {
+                console.error('Error saving data:', error);
+            }
+        }
+
+        // Initialize sample data
+        function initializeSampleData() {
+            if (students.length === 0) {
+                students = [
+                    { admissionNo: 'ADM001', name: 'John Doe', gender: 'Male', grade: 'PP1', year: '2024', section: 'PRE-PRIMARY' },
+                    { admissionNo: 'ADM002', name: 'Jane Smith', gender: 'Female', grade: 'PP1', year: '2024', section: 'PRE-PRIMARY' },
+                    { admissionNo: 'ADM003', name: 'Bob Johnson', gender: 'Male', grade: 'PP2', year: '2024', section: 'PRE-PRIMARY' },
+                    { admissionNo: 'ADM004', name: 'Alice Brown', gender: 'Female', grade: 'PP2', year: '2024', section: 'PRE-PRIMARY' },
+                    { admissionNo: 'ADM005', name: 'Tom Wilson', gender: 'Male', grade: 'Grade 1', year: '2024', section: 'LOWER PRIMARY' },
+                    { admissionNo: 'ADM006', name: 'Emma Davis', gender: 'Female', grade: 'Grade 1', year: '2024', section: 'LOWER PRIMARY' },
+                    { admissionNo: 'ADM007', name: 'Mike Taylor', gender: 'Male', grade: 'Grade 7', year: '2024', section: 'JUNIOR' },
+                    { admissionNo: 'ADM008', name: 'Sarah Lee', gender: 'Female', grade: 'Grade 7', year: '2024', section: 'JUNIOR' }
+                ];
+                console.log('Sample students initialized');
+            }
+
+            if (marks.length === 0) {
+                marks = [
+                    { studentId: 'ADM001', year: '2024', grade: 'PP1', term: 'Term 1', examType: 'Midterm', subject: 'Language Activities', mark: 85, performanceLevel: 'EE', achievementLevel: 'AL8', points: 8 },
+                    { studentId: 'ADM001', year: '2024', grade: 'PP1', term: 'Term 1', examType: 'Endterm', subject: 'Language Activities', mark: 88, performanceLevel: 'EE', achievementLevel: 'AL8', points: 8 },
+                    { studentId: 'ADM002', year: '2024', grade: 'PP1', term: 'Term 1', examType: 'Midterm', subject: 'Language Activities', mark: 78, performanceLevel: 'EE', achievementLevel: 'AL7', points: 7 }
+                ];
+                console.log('Sample marks initialized');
+            }
+
+            saveData();
+        }
+
+        // Update grade options
+        function updateGradeOptions() {
+            const grades = sections[currentSection].grades;
+            const selects = ['marksGrade', 'gradeFilter', 'bulkReportGrade', 'analyticsGrade', 'studentGrade', 'bulkPromoteGrade'];
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    const currentValue = select.value;
+                    select.innerHTML = '<option value="">Select Grade</option>';
+                    grades.forEach(grade => {
+                        const option = document.createElement('option');
+                        option.value = grade;
+                        option.textContent = grade;
+                        select.appendChild(option);
+                    });
+                    if (grades.includes(currentValue)) {
+                        select.value = currentValue;
+                    }
+                }
+            });
+
+            // Update promotion grades (all grades)
+            const promoteToSelect = document.getElementById('promoteToGrade');
+            if (promoteToSelect) {
+                promoteToSelect.innerHTML = '<option value="">Select New Grade</option>';
+                allGrades.forEach(grade => {
+                    const option = document.createElement('option');
+                    option.value = grade;
+                    option.textContent = grade;
+                    promoteToSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Update section interface
+        function updateSectionInterface() {
+            const section = sections[currentSection];
+            document.getElementById('currentSection').textContent = section.name;
+            document.getElementById('sectionInfo').textContent = section.info;
+            document.getElementById('totalClasses').textContent = section.grades.length;
+            updateGradeOptions();
+            loadDashboardData();
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            const sectionStudents = students.filter(s => sections[currentSection].grades.includes(s.grade));
+            document.getElementById('totalStudents').textContent = sectionStudents.length;
+        }
+
+        // Show view
+        function showView(viewName) {
+            console.log('Showing view:', viewName);
+            
+            // Hide all views
+            document.querySelectorAll('.view-content').forEach(view => {
+                view.classList.add('hidden');
+            });
+            
+            // Show selected view
+            const targetView = document.getElementById(viewName + 'View');
+            if (targetView) {
+                targetView.classList.remove('hidden');
+            }
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('btn-active');
+            });
+            const activeBtn = document.querySelector(`[data-view="${viewName}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('btn-active');
+            }
+            
+            // Load view-specific data
+            if (viewName === 'students') {
+                loadStudentsTable();
+            } else if (viewName === 'reports') {
+                loadReportStudents();
+            } else if (viewName === 'promotion') {
+                loadPromotionData();
+            }
+        }
+
+        // Load students table
+        function loadStudentsTable() {
+            const tbody = document.getElementById('studentsTable');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            const sectionStudents = students.filter(s => sections[currentSection].grades.includes(s.grade));
+            const searchTerm = document.getElementById('studentSearch')?.value.toLowerCase() || '';
+            const gradeFilter = document.getElementById('gradeFilter')?.value || '';
+            
+            let filteredStudents = sectionStudents;
+            
+            if (searchTerm) {
+                filteredStudents = filteredStudents.filter(s => 
+                    s.name.toLowerCase().includes(searchTerm) ||
+                    s.admissionNo.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (gradeFilter) {
+                filteredStudents = filteredStudents.filter(s => s.grade === gradeFilter);
+            }
+            
+            filteredStudents.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.className = 'border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700';
+                row.innerHTML = `
+                    <td class="py-3 px-4">${student.admissionNo}</td>
+                    <td class="py-3 px-4">${student.name}</td>
+                    <td class="py-3 px-4">${student.gender}</td>
+                    <td class="py-3 px-4">${student.grade}</td>
+                    <td class="py-3 px-4">${student.year}</td>
+                    <td class="py-3 px-4">
+                        <button class="text-red-500 hover:text-red-700" onclick="deleteStudent('${student.admissionNo}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Load marks entry table
+        function loadMarksEntryTable(year, grade, term, examType, subject) {
+            console.log('Loading marks entry table with parameters:', { year, grade, term, examType, subject });
+            
+            const gradeStudents = students.filter(s => s.grade === grade);
+            console.log('Found students for grade:', gradeStudents.length);
+            
+            if (gradeStudents.length === 0) {
+                alert(`No students found for grade "${grade}". Please add students first.`);
+                return;
+            }
+            
+            const tableContainer = document.getElementById('marksEntryTable');
+            if (!tableContainer) {
+                console.error('Marks entry table container not found');
+                alert('Error: Table container not found. Please try refreshing the page.');
+                return;
+            }
+            
+            let tableHTML = `
+                <table class="w-full table-auto border border-gray-300 dark:border-gray-600">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th class="text-left py-3 px-4 border-b">S/No</th>
+                            <th class="text-left py-3 px-4 border-b">Admission No.</th>
+                            <th class="text-left py-3 px-4 border-b">Name</th>
+                            <th class="text-left py-3 px-4 border-b">Gender</th>
+                            <th class="text-left py-3 px-4 border-b">Marks (0-100)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            gradeStudents.forEach((student, index) => {
+                const existingMark = marks.find(m => 
+                    m.studentId === student.admissionNo && 
+                    m.year === year && 
+                    m.grade === grade && 
+                    m.term === term && 
+                    m.examType === examType && 
+                    m.subject === subject
+                );
+                
+                tableHTML += `
+                    <tr class="border-b hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td class="py-3 px-4">${index + 1}</td>
+                        <td class="py-3 px-4">${student.admissionNo}</td>
+                        <td class="py-3 px-4">${student.name}</td>
+                        <td class="py-3 px-4">${student.gender}</td>
+                        <td class="py-3 px-4">
+                            <input type="number" 
+                                   min="0" 
+                                   max="100" 
+                                   step="0.1"
+                                   class="mark-input w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base" 
+                                   data-student-id="${student.admissionNo}" 
+                                   value="${existingMark ? existingMark.mark : ''}" 
+                                   placeholder="Enter mark" />
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+                <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+                    <p class="text-sm text-blue-700 dark:text-blue-300">
+                        <strong>Subject:</strong> ${subject} | 
+                        <strong>Term:</strong> ${term} | 
+                        <strong>Exam:</strong> ${examType}
+                    </p>
+                </div>
+            `;
+            
+            tableContainer.innerHTML = tableHTML;
+            document.getElementById('marksEntrySection').classList.remove('hidden');
+            
+            console.log('Marks entry table loaded successfully');
+        }
+
+        // Load report students
+        function loadReportStudents() {
+            const select = document.getElementById('reportStudent');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Select Student</option>';
+            const sectionStudents = students.filter(s => sections[currentSection].grades.includes(s.grade));
+            
+            sectionStudents.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.admissionNo;
+                option.textContent = `${student.name} (${student.admissionNo}) - ${student.grade}`;
+                select.appendChild(option);
+            });
+        }
+
+        // Load promotion data
+        function loadPromotionData() {
+            // Load students for individual promotion
+            const promoteStudentSelect = document.getElementById('promoteStudent');
+            if (promoteStudentSelect) {
+                promoteStudentSelect.innerHTML = '<option value="">Select Student</option>';
+                students.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.admissionNo;
+                    option.textContent = `${student.name} (${student.grade})`;
+                    promoteStudentSelect.appendChild(option);
+                });
+            }
+
+            // Load promotion history
+            loadPromotionHistory();
+        }
+
+        // Load promotion history
+        function loadPromotionHistory() {
+            const container = document.getElementById('promotionHistory');
+            if (!container) return;
+
+            if (promotionHistory.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">No recent promotions found.</p>';
+                return;
+            }
+
+            let historyHTML = '<div class="space-y-3">';
+            promotionHistory.slice(-10).reverse().forEach(record => {
+                historyHTML += `
+                    <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                        <p class="font-medium">${record.type === 'individual' ? 'Individual' : 'Bulk'} Promotion</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">${record.details}</p>
+                        <p class="text-xs text-gray-500">${new Date(record.date).toLocaleString()}</p>
+                    </div>
+                `;
+            });
+            historyHTML += '</div>';
+            
+            container.innerHTML = historyHTML;
+        }
+
+        // Delete student
+        function deleteStudent(admissionNo) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                students = students.filter(s => s.admissionNo !== admissionNo);
+                marks = marks.filter(m => m.studentId !== admissionNo);
+                saveData();
+                loadStudentsTable();
+                loadDashboardData();
+                alert('Student deleted successfully.');
+            }
+        }
+
+        // CSV export
+        function exportStudentsCSV() {
+            const sectionStudents = students.filter(s => sections[currentSection].grades.includes(s.grade));
+            if (sectionStudents.length === 0) {
+                alert('No students to export');
+                return;
+            }
+            
+            const headers = ['Admission No', 'Name', 'Gender', 'Grade', 'Year', 'Section'];
+            const csvContent = [
+                headers.join(','),
+                ...sectionStudents.map(s => [s.admissionNo, s.name, s.gender, s.grade, s.year, s.section].join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentSection}_students.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Individual student promotion
+        function promoteIndividualStudent() {
+            const studentId = document.getElementById('promoteStudent').value;
+            const newGrade = document.getElementById('promoteToGrade').value;
+            
+            if (!studentId || !newGrade) {
+                alert('Please select both student and new grade.');
+                return;
+            }
+            
+            const student = students.find(s => s.admissionNo === studentId);
+            if (!student) {
+                alert('Student not found.');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to promote ${student.name} from ${student.grade} to ${newGrade}?`)) {
+                const oldGrade = student.grade;
+                student.grade = newGrade;
+                
+                // Update section if necessary
+                for (const [sectionKey, section] of Object.entries(sections)) {
+                    if (section.grades.includes(newGrade)) {
+                        student.section = sectionKey;
+                        break;
+                    }
+                }
+                
+                // Record promotion
+                promotionHistory.push({
+                    type: 'individual',
+                    date: new Date().toISOString(),
+                    details: `${student.name} promoted from ${oldGrade} to ${newGrade}`,
+                    studentId: student.admissionNo
+                });
+                
+                saveData();
+                loadPromotionData();
+                document.getElementById('promoteStudent').value = '';
+                document.getElementById('currentGrade').value = '';
+                document.getElementById('promoteToGrade').value = '';
+                
+                alert(`${student.name} successfully promoted from ${oldGrade} to ${newGrade}!`);
+            }
+        }
+
+        // Preview bulk promotion
+        function previewBulkPromotion() {
+            const grade = document.getElementById('bulkPromoteGrade').value;
+            const year = document.getElementById('promoteYear').value;
+            
+            if (!grade) {
+                alert('Please select a grade to promote.');
+                return;
+            }
+            
+            const studentsToPromote = students.filter(s => s.grade === grade && s.year === year);
+            const nextGrade = gradeProgression[grade];
+            
+            if (!nextGrade) {
+                alert('Cannot determine next grade for promotion.');
+                return;
+            }
+            
+            if (studentsToPromote.length === 0) {
+                alert(`No students found in ${grade} for year ${year}.`);
+                return;
+            }
+            
+            const previewText = `${studentsToPromote.length} students will be promoted from ${grade} to ${nextGrade}`;
+            document.getElementById('previewText').textContent = previewText;
+            document.getElementById('promotionPreview').classList.remove('hidden');
+        }
+
+        // Bulk promotion
+        function promoteBulkStudents() {
+            const grade = document.getElementById('bulkPromoteGrade').value;
+            const year = document.getElementById('promoteYear').value;
+            
+            if (!grade) {
+                alert('Please select a grade to promote.');
+                return;
+            }
+            
+            const studentsToPromote = students.filter(s => s.grade === grade && s.year === year);
+            const nextGrade = gradeProgression[grade];
+            
+            if (!nextGrade || nextGrade === 'Graduate') {
+                alert('Students in this grade cannot be promoted further or will graduate.');
+                return;
+            }
+            
+            if (studentsToPromote.length === 0) {
+                alert(`No students found in ${grade} for year ${year}.`);
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to promote ${studentsToPromote.length} students from ${grade} to ${nextGrade}?`)) {
+                let promotedCount = 0;
+                
+                studentsToPromote.forEach(student => {
+                    student.grade = nextGrade;
+                    
+                    // Update section if necessary
+                    for (const [sectionKey, section] of Object.entries(sections)) {
+                        if (section.grades.includes(nextGrade)) {
+                            student.section = sectionKey;
+                            break;
+                        }
+                    }
+                    
+                    promotedCount++;
+                });
+                
+                // Record bulk promotion
+                promotionHistory.push({
+                    type: 'bulk',
+                    date: new Date().toISOString(),
+                    details: `${promotedCount} students promoted from ${grade} to ${nextGrade}`,
+                    count: promotedCount,
+                    fromGrade: grade,
+                    toGrade: nextGrade
+                });
+                
+                saveData();
+                loadPromotionData();
+                document.getElementById('bulkPromoteGrade').value = '';
+                document.getElementById('promotionPreview').classList.add('hidden');
+                
+                alert(`Successfully promoted ${promotedCount} students from ${grade} to ${nextGrade}!`);
+            }
+        }
+
+        // Event listeners setup
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
+
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const role = document.getElementById('userRole').value;
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                // Simple authentication
+                if ((role === 'admin' && username === 'admin' && password === 'admin123') ||
+                    (role === 'teacher' && password === 'teacher123') ||
+                    (role === 'student' && password === 'student123') ||
+                    (role === 'parent' && password === 'parent123')) {
+                    
+                    currentUser = username;
+                    currentRole = role;
+                    
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('mainDashboard').classList.remove('hidden');
+                    document.getElementById('currentUser').textContent = `${role.charAt(0).toUpperCase() + role.slice(1)}: ${username}`;
+                    
+                    updateSectionInterface();
+                    showView('dashboard');
+                    console.log('Login successful');
+                } else {
+                    alert('Invalid credentials. Please try again.');
+                }
+            });
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                currentUser = null;
+                currentRole = null;
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('mainDashboard').classList.add('hidden');
+            });
+
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const view = this.getAttribute('data-view');
+                    showView(view);
+                });
+            });
+
+            // Section selector
+            document.getElementById('sectionSelector').addEventListener('change', function() {
+                currentSection = this.value;
+                updateSectionInterface();
+            });
+
+            // Student management
+            document.getElementById('addStudentBtn').addEventListener('click', function() {
+                document.getElementById('studentModal').classList.remove('hidden');
+                updateGradeOptions();
+            });
+
+            document.getElementById('cancelStudentBtn').addEventListener('click', function() {
+                document.getElementById('studentModal').classList.add('hidden');
+            });
+
+            document.getElementById('saveStudentBtn').addEventListener('click', function() {
+                const admissionNo = document.getElementById('studentAdmissionNo').value;
+                const name = document.getElementById('studentName').value;
+                const gender = document.getElementById('studentGender').value;
+                const grade = document.getElementById('studentGrade').value;
+                const year = document.getElementById('studentYear').value;
+
+                if (!admissionNo || !name || !gender || !grade || !year) {
+                    alert('Please fill in all fields.');
+                    return;
+                }
+
+                // Check if admission number already exists
+                if (students.some(s => s.admissionNo === admissionNo)) {
+                    alert('A student with this admission number already exists.');
+                    return;
+                }
+
+                // Determine section
+                let section = currentSection;
+                for (const [sectionKey, sectionData] of Object.entries(sections)) {
+                    if (sectionData.grades.includes(grade)) {
+                        section = sectionKey;
+                        break;
+                    }
+                }
+
+                students.push({
+                    admissionNo,
+                    name,
+                    gender,
+                    grade,
+                    year,
+                    section
+                });
+
+                saveData();
+                loadStudentsTable();
+                loadDashboardData();
+                document.getElementById('studentModal').classList.add('hidden');
+                
+                // Clear form
+                document.getElementById('studentAdmissionNo').value = '';
+                document.getElementById('studentName').value = '';
+                document.getElementById('studentGender').value = '';
+                document.getElementById('studentGrade').value = '';
+                document.getElementById('studentYear').value = '2024';
+
+                alert('Student added successfully!');
+            });
+
+            // Export students
+            document.getElementById('exportStudentsBtn').addEventListener('click', exportStudentsCSV);
+
+            // Student search
+            document.getElementById('studentSearch').addEventListener('input', loadStudentsTable);
+            document.getElementById('gradeFilter').addEventListener('change', loadStudentsTable);
+
+            // Marks entry
+            document.getElementById('marksGrade').addEventListener('change', function() {
+                const grade = this.value;
+                const subjectSelect = document.getElementById('marksSubject');
+                subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+                
+                if (grade && learningAreas[grade]) {
+                    learningAreas[grade].forEach(subject => {
+                        const option = document.createElement('option');
+                        option.value = subject;
+                        option.textContent = subject;
+                        subjectSelect.appendChild(option);
+                    });
+                }
+            });
+
+            document.getElementById('loadStudentsBtn').addEventListener('click', function() {
+                const year = document.getElementById('marksYear').value;
+                const grade = document.getElementById('marksGrade').value;
+                const term = document.getElementById('marksTerm').value;
+                const examType = document.getElementById('marksExamType').value;
+                const subject = document.getElementById('marksSubject').value;
+                
+                if (!year || !grade || !term || !examType || !subject) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                loadMarksEntryTable(year, grade, term, examType, subject);
+            });
+
+            document.getElementById('submitMarksBtn').addEventListener('click', function() {
+                const year = document.getElementById('marksYear').value;
+                const grade = document.getElementById('marksGrade').value;
+                const term = document.getElementById('marksTerm').value;
+                const examType = document.getElementById('marksExamType').value;
+                const subject = document.getElementById('marksSubject').value;
+                
+                const markInputs = document.querySelectorAll('.mark-input');
+                let marksToSave = [];
+                
+                markInputs.forEach(input => {
+                    const studentId = input.getAttribute('data-student-id');
+                    const mark = parseFloat(input.value);
+                    
+                    if (!isNaN(mark) && mark >= 0 && mark <= 100) {
+                        // Remove existing mark
+                        marks = marks.filter(m => !(
+                            m.studentId === studentId && 
+                            m.year === year && 
+                            m.grade === grade && 
+                            m.term === term && 
+                            m.examType === examType && 
+                            m.subject === subject
+                        ));
+                        
+                        // Add new mark
+                        marksToSave.push({
+                            studentId,
+                            year,
+                            grade,
+                            term,
+                            examType,
+                            subject,
+                            mark,
+                            performanceLevel: getPerformanceLevel(mark),
+                            achievementLevel: getAchievementLevel(mark),
+                            points: getPoints(getAchievementLevel(mark)),
+                            submittedBy: currentUser,
+                            submittedAt: new Date().toISOString()
+                        });
+                    }
+                });
+                
+                marks.push(...marksToSave);
+                saveData();
+                
+                alert(`Marks submitted successfully for ${marksToSave.length} students.`);
+                document.getElementById('marksEntrySection').classList.add('hidden');
+            });
+
+            // Reports
+            document.getElementById('generateReportBtn').addEventListener('click', function() {
+                const studentId = document.getElementById('reportStudent').value;
+                const term = document.getElementById('reportTerm').value;
+                const year = document.getElementById('reportYear').value;
+                
+                if (!studentId || !term || !year) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                const student = students.find(s => s.admissionNo === studentId);
+                if (!student) {
+                    alert('Student not found');
+                    return;
+                }
+                
+                generateIndividualReportCard(student, term, year);
+            });
+
+            document.getElementById('generateBulkReportsBtn').addEventListener('click', function() {
+                const grade = document.getElementById('bulkReportGrade').value;
+                const term = document.getElementById('bulkReportTerm').value;
+                const year = document.getElementById('bulkReportYear').value;
+                
+                if (!grade || !term || !year) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                generateBulkReportCards(grade, term, year);
+            });
+
+            // Analytics
+            document.getElementById('generateAnalyticsBtn').addEventListener('click', function() {
+                const year = document.getElementById('analyticsYear').value;
+                const grade = document.getElementById('analyticsGrade').value;
+                const term = document.getElementById('analyticsTerm').value;
+                const examType = document.getElementById('analyticsExamType').value;
+                
+                if (!year || !grade || !term || !examType) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                generateAnalytics(year, grade, term, examType);
+            });
+
+            // Promotion events
+            document.getElementById('promoteStudent').addEventListener('change', function() {
+                const studentId = this.value;
+                const currentGradeInput = document.getElementById('currentGrade');
+                
+                if (studentId) {
+                    const student = students.find(s => s.admissionNo === studentId);
+                    if (student) {
+                        currentGradeInput.value = student.grade;
+                    }
+                } else {
+                    currentGradeInput.value = '';
+                }
+            });
+
+            document.getElementById('promoteIndividualBtn').addEventListener('click', promoteIndividualStudent);
+            document.getElementById('previewPromotionBtn').addEventListener('click', previewBulkPromotion);
+            document.getElementById('promoteBulkBtn').addEventListener('click', promoteBulkStudents);
+
+            console.log('Event listeners setup complete');
+        }
+
+        // Generate individual report card
+        function generateIndividualReportCard(student, term, year) {
+            const subjects = learningAreas[student.grade] || [];
+            const studentMarks = marks.filter(m => 
+                m.studentId === student.admissionNo && 
+                m.year === year && 
+                m.term === term
+            );
+            
+            const logoClass = ['Grade 7', 'Grade 8', 'Grade 9'].includes(student.grade) ? 'junior-logo' : 'primary-logo';
+            
+            let reportHTML = `
+                <div class="report-card bg-white p-8 max-w-4xl mx-auto border mb-8">
+                    <div class="text-center mb-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <div class="school-logo ${logoClass} mr-6"></div>
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900">RAMA SDA SCHOOL</h1>
+                                <p class="text-lg text-gray-600">P.O. BOX 45-50201, CHEPTAIS</p>
+                                <p class="text-sm text-gray-500">IN GOD WE CAN</p>
+                            </div>
+                        </div>
+                        <h2 class="text-2xl font-bold mb-4">STUDENT REPORT CARD</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <p><strong>Name:</strong> ${student.name}</p>
+                            <p><strong>Admission No:</strong> ${student.admissionNo}</p>
+                            <p><strong>Gender:</strong> ${student.gender}</p>
+                        </div>
+                        <div>
+                            <p><strong>Grade:</strong> ${student.grade}</p>
+                            <p><strong>Academic Year:</strong> ${year}</p>
+                            <p><strong>Term:</strong> ${term}</p>
+                        </div>
+                    </div>
+                    
+                    <table class="w-full border-collapse border border-gray-400 mb-6">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-400 p-3">Learning Area</th>
+                                <th class="border border-gray-400 p-3">Midterm</th>
+                                <th class="border border-gray-400 p-3">Endterm</th>
+                                <th class="border border-gray-400 p-3">Average</th>
+                                <th class="border border-gray-400 p-3">PL</th>
+                                <th class="border border-gray-400 p-3">AL</th>
+                                <th class="border border-gray-400 p-3">Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            let totalPoints = 0;
+            let totalMarks = 0;
+            let subjectCount = 0;
+            
+            subjects.forEach(subject => {
+                const midtermMark = studentMarks.find(m => m.subject === subject && m.examType === 'Midterm');
+                const endtermMark = studentMarks.find(m => m.subject === subject && m.examType === 'Endterm');
+                
+                let midtermScore = midtermMark ? midtermMark.mark : 0;
+                let endtermScore = endtermMark ? endtermMark.mark : 0;
+                let average = (midtermScore + endtermScore) / 2;
+                
+                if (midtermScore > 0 || endtermScore > 0) {
+                    const pl = getPerformanceLevel(average);
+                    const al = getAchievementLevel(average);
+                    const points = getPoints(al);
+                    
+                    totalPoints += points;
+                    totalMarks += average;
+                    subjectCount++;
+                    
+                    reportHTML += `
+                        <tr>
+                            <td class="border border-gray-400 p-2">${subject}</td>
+                            <td class="border border-gray-400 p-2 text-center">${midtermScore || '-'}</td>
+                            <td class="border border-gray-400 p-2 text-center">${endtermScore || '-'}</td>
+                            <td class="border border-gray-400 p-2 text-center">${average.toFixed(1)}</td>
+                            <td class="border border-gray-400 p-2 text-center">${pl}</td>
+                            <td class="border border-gray-400 p-2 text-center">${al}</td>
+                            <td class="border border-gray-400 p-2 text-center">${points}</td>
+                        </tr>
+                    `;
+                } else {
+                    reportHTML += `
+                        <tr>
+                            <td class="border border-gray-400 p-2">${subject}</td>
+                            <td class="border border-gray-400 p-2 text-center">-</td>
+                            <td class="border border-gray-400 p-2 text-center">-</td>
+                            <td class="border border-gray-400 p-2 text-center">-</td>
+                            <td class="border border-gray-400 p-2 text-center">-</td>
+                            <td class="border border-gray-400 p-2 text-center">-</td>
+                            <td class="border border-gray-400 p-2 text-center">-</td>
+                        </tr>
+                    `;
+                }
+            });
+            
+            const averageMark = subjectCount > 0 ? (totalMarks / subjectCount).toFixed(1) : 0;
+            
+            reportHTML += `
+                        </tbody>
+                    </table>
+                    
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <p><strong>Total Points:</strong> ${totalPoints}</p>
+                            <p><strong>Average Mark:</strong> ${averageMark}%</p>
+                        </div>
+                        <div>
+                            <p><strong>Overall Performance:</strong> ${getPerformanceLevel(averageMark)}</p>
+                            <p><strong>Achievement Level:</strong> ${getAchievementLevel(averageMark)}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="no-print mt-6">
+                        <button onclick="window.print()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg mr-4">
+                            <i class="fas fa-print mr-2"></i>Print Report
+                        </button>
+                        <button onclick="document.getElementById('reportContent').classList.add('hidden')" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg">
+                            Close Report
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('reportContent').innerHTML = reportHTML;
+            document.getElementById('reportContent').classList.remove('hidden');
+        }
+
+        // Generate bulk report cards
+        function generateBulkReportCards(grade, term, year) {
+            const gradeStudents = students.filter(s => s.grade === grade);
+            
+            if (gradeStudents.length === 0) {
+                alert('No students found for this grade');
+                return;
+            }
+            
+            let bulkReportsHTML = '';
+            
+            gradeStudents.forEach((student, index) => {
+                if (index > 0) {
+                    bulkReportsHTML += '<div class="page-break"></div>';
+                }
+                
+                const subjects = learningAreas[student.grade] || [];
+                const studentMarks = marks.filter(m => 
+                    m.studentId === student.admissionNo && 
+                    m.year === year && 
+                    m.term === term
+                );
+                
+                const logoClass = ['Grade 7', 'Grade 8', 'Grade 9'].includes(student.grade) ? 'junior-logo' : 'primary-logo';
+                
+                bulkReportsHTML += `
+                    <div class="report-card bg-white p-8 max-w-4xl mx-auto border mb-8">
+                        <div class="text-center mb-6">
+                            <div class="flex items-center justify-center mb-4">
+                                <div class="school-logo ${logoClass} mr-6"></div>
+                                <div>
+                                    <h1 class="text-3xl font-bold text-gray-900">RAMA SDA SCHOOL</h1>
+                                    <p class="text-lg text-gray-600">P.O. BOX 45-50201, CHEPTAIS</p>
+                                    <p class="text-sm text-gray-500">IN GOD WE CAN</p>
+                                </div>
+                            </div>
+                            <h2 class="text-2xl font-bold mb-4">STUDENT REPORT CARD</h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <p><strong>Name:</strong> ${student.name}</p>
+                                <p><strong>Admission No:</strong> ${student.admissionNo}</p>
+                                <p><strong>Gender:</strong> ${student.gender}</p>
+                            </div>
+                            <div>
+                                <p><strong>Grade:</strong> ${student.grade}</p>
+                                <p><strong>Academic Year:</strong> ${year}</p>
+                                <p><strong>Term:</strong> ${term}</p>
+                            </div>
+                        </div>
+                        
+                        <table class="w-full border-collapse border border-gray-400 mb-6">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border border-gray-400 p-3">Learning Area</th>
+                                    <th class="border border-gray-400 p-3">Midterm</th>
+                                    <th class="border border-gray-400 p-3">Endterm</th>
+                                    <th class="border border-gray-400 p-3">Average</th>
+                                    <th class="border border-gray-400 p-3">PL</th>
+                                    <th class="border border-gray-400 p-3">AL</th>
+                                    <th class="border border-gray-400 p-3">Points</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                let totalPoints = 0;
+                let totalMarks = 0;
+                let subjectCount = 0;
+                
+                subjects.forEach(subject => {
+                    const midtermMark = studentMarks.find(m => m.subject === subject && m.examType === 'Midterm');
+                    const endtermMark = studentMarks.find(m => m.subject === subject && m.examType === 'Endterm');
+                    
+                    let midtermScore = midtermMark ? midtermMark.mark : 0;
+                    let endtermScore = endtermMark ? endtermMark.mark : 0;
+                    let average = (midtermScore + endtermScore) / 2;
+                    
+                    if (midtermScore > 0 || endtermScore > 0) {
+                        const pl = getPerformanceLevel(average);
+                        const al = getAchievementLevel(average);
+                        const points = getPoints(al);
+                        
+                        totalPoints += points;
+                        totalMarks += average;
+                        subjectCount++;
+                        
+                        bulkReportsHTML += `
+                            <tr>
+                                <td class="border border-gray-400 p-2">${subject}</td>
+                                <td class="border border-gray-400 p-2 text-center">${midtermScore || '-'}</td>
+                                <td class="border border-gray-400 p-2 text-center">${endtermScore || '-'}</td>
+                                <td class="border border-gray-400 p-2 text-center">${average.toFixed(1)}</td>
+                                <td class="border border-gray-400 p-2 text-center">${pl}</td>
+                                <td class="border border-gray-400 p-2 text-center">${al}</td>
+                                <td class="border border-gray-400 p-2 text-center">${points}</td>
+                            </tr>
+                        `;
+                    } else {
+                        bulkReportsHTML += `
+                            <tr>
+                                <td class="border border-gray-400 p-2">${subject}</td>
+                                <td class="border border-gray-400 p-2 text-center">-</td>
+                                <td class="border border-gray-400 p-2 text-center">-</td>
+                                <td class="border border-gray-400 p-2 text-center">-</td>
+                                <td class="border border-gray-400 p-2 text-center">-</td>
+                                <td class="border border-gray-400 p-2 text-center">-</td>
+                                <td class="border border-gray-400 p-2 text-center">-</td>
+                            </tr>
+                        `;
+                    }
+                });
+                
+                const averageMark = subjectCount > 0 ? (totalMarks / subjectCount).toFixed(1) : 0;
+                
+                bulkReportsHTML += `
+                            </tbody>
+                        </table>
+                        
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <p><strong>Total Points:</strong> ${totalPoints}</p>
+                                <p><strong>Average Mark:</strong> ${averageMark}%</p>
+                            </div>
+                            <div>
+                                <p><strong>Overall Performance:</strong> ${getPerformanceLevel(averageMark)}</p>
+                                <p><strong>Achievement Level:</strong> ${getAchievementLevel(averageMark)}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            bulkReportsHTML += `
+                <div class="no-print mt-6 text-center">
+                    <button onclick="window.print()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg mr-4">
+                        <i class="fas fa-print mr-2"></i>Print All Reports
+                    </button>
+                    <button onclick="document.getElementById('reportContent').classList.add('hidden')" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg">
+                        Close Reports
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('reportContent').innerHTML = bulkReportsHTML;
+            document.getElementById('reportContent').classList.remove('hidden');
+        }
+
+        // Generate analytics
+        function generateAnalytics(year, grade, term, examType) {
+            const gradeStudents = students.filter(s => s.grade === grade);
+            const subjects = learningAreas[grade] || [];
+            
+            if (gradeStudents.length === 0) {
+                alert('No students found for this grade');
+                return;
+            }
+            
+            // Calculate student performance
+            const studentPerformance = gradeStudents.map(student => {
+                const studentMarks = marks.filter(m => 
+                    m.studentId === student.admissionNo && 
+                    m.year === year && 
+                    m.grade === grade && 
+                    m.term === term && 
+                    m.examType === examType
+                );
+                
+                let totalPoints = 0;
+                let totalMarks = 0;
+                let subjectCount = 0;
+                
+                subjects.forEach(subject => {
+                    const mark = studentMarks.find(m => m.subject === subject);
+                    if (mark) {
+                        totalPoints += mark.points;
+                        totalMarks += mark.mark;
+                        subjectCount++;
+                    }
+                });
+                
+                const averageMark = subjectCount > 0 ? totalMarks / subjectCount : 0;
+                
+                return {
+                    student,
+                    totalPoints,
+                    averageMark: averageMark.toFixed(1),
+                    subjectCount
+                };
+            });
+            
+            // Sort by total points
+            studentPerformance.sort((a, b) => b.totalPoints - a.totalPoints);
+            
+            let analyticsHTML = `
+                <div class="analytics-report bg-white p-6">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold mb-2">EXAM ANALYTICS</h2>
+                        <p class="text-lg">Year: ${year} | Grade: ${grade} | Term: ${term} | Exam: ${examType}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3">Top Performers</h3>
+                            <table class="w-full border-collapse border border-gray-400">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border border-gray-400 p-2">Rank</th>
+                                        <th class="border border-gray-400 p-2">Name</th>
+                                        <th class="border border-gray-400 p-2">Points</th>
+                                        <th class="border border-gray-400 p-2">Average</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+            `;
+            
+            studentPerformance.slice(0, 10).forEach((student, index) => {
+                analyticsHTML += `
+                    <tr>
+                        <td class="border border-gray-400 p-2 text-center">${index + 1}</td>
+                        <td class="border border-gray-400 p-2">${student.student.name}</td>
+                        <td class="border border-gray-400 p-2 text-center">${student.totalPoints}</td>
+                        <td class="border border-gray-400 p-2 text-center">${student.averageMark}</td>
+                    </tr>
+                `;
+            });
+            
+            analyticsHTML += `
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3">Class Statistics</h3>
+                            <div class="space-y-3">
+                                <div class="bg-blue-100 p-3 rounded">
+                                    <p class="font-medium">Total Students</p>
+                                    <p class="text-2xl font-bold text-blue-600">${gradeStudents.length}</p>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded">
+                                    <p class="font-medium">Highest Score</p>
+                                    <p class="text-2xl font-bold text-green-600">${studentPerformance[0]?.averageMark || 0}%</p>
+                                </div>
+                                <div class="bg-yellow-100 p-3 rounded">
+                                    <p class="font-medium">Class Average</p>
+                                    <p class="text-2xl font-bold text-yellow-600">${(studentPerformance.reduce((sum, s) => sum + parseFloat(s.averageMark), 0) / studentPerformance.length || 0).toFixed(1)}%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="no-print mt-6">
+                        <button onclick="window.print()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg mr-4">
+                            <i class="fas fa-print mr-2"></i>Print Analytics
+                        </button>
+                        <button onclick="document.getElementById('analyticsResults').classList.add('hidden')" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg">
+                            Close Analytics
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('analyticsResults').innerHTML = analyticsHTML;
+            document.getElementById('analyticsResults').classList.remove('hidden');
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing app...');
+            
+            // Load saved data
+            try {
+                students = JSON.parse(localStorage.getItem('students') || '[]');
+                marks = JSON.parse(localStorage.getItem('marks') || '[]');
+                promotionHistory = JSON.parse(localStorage.getItem('promotionHistory') || '[]');
+            } catch (error) {
+                console.error('Error loading saved data:', error);
+            }
+            
+            // Initialize sample data if empty
+            initializeSampleData();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            console.log('App initialized successfully');
+        });
+    </script>
+</body>
+</html>
